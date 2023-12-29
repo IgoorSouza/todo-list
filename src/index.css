@@ -104,7 +104,7 @@
 
 .taskInfo p {
   margin-top: 10px;
-  margin-left: 5px;
+  margin-left: 10px;
   font-size: 18px;
 }
 
@@ -316,7 +316,6 @@ input#description {
   }
 
   .taskInfo p {
-    margin-left: 10px;
     font-size: 20px;
   }
 
