@@ -34,13 +34,12 @@
 .header {
   margin-top: 20px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .header div {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header h1 {
@@ -48,6 +47,8 @@
 }
 
 .header button {
+  font-size: 12px;
+  height: 40px;
   padding: 10px;
 }
 
@@ -97,18 +98,20 @@
 }
 
 .taskInfo h1 {
+  font-size: 28px;
   margin-left: 10px;
 }
 
 .taskInfo p {
   margin-top: 5px;
-  margin-left: 10px;
-  font-size: 20px;
+  margin-left: 5px;
+  font-size: 18px;
 }
 
 .importantTask {
   display: flex;
   align-items: center;
+  margin-top: 10px;
 }
 
 .importantTask div {
@@ -126,7 +129,7 @@
 }
 
 .taskButtons {
-  width: 32%;
+  width: 30%;
   display: flex;
   flex-flow: column;
 }
@@ -135,6 +138,7 @@
   background-color: white;
   color: rgb(0, 140, 255);
   border: 2px solid rgb(0, 140, 255);
+  font-size: 12px;
 }
 
 .taskButtons button:hover {
@@ -143,6 +147,7 @@
 
 #doneButton {
   border: 2px solid rgb(0, 180, 0);
+  height: 40px;
   color: rgb(0, 180, 0);
 }
 
@@ -164,7 +169,7 @@
 
 .addTaskInterfaceContainer,
 .filterTasksInterfaceContainer {
-  width: 400px;
+  width: 350px;
   height: 330px;
   border-radius: 20px;
   padding: 15px;
@@ -187,9 +192,13 @@
   padding-left: 5px;
 }
 
+input#description {
+  height: 45px;
+}
+
 .filterTasksInterfaceContainer {
-  width: 350px;
-  height: 230px;
+  width: 300px;
+  height: 220px;
 }
 
 .filterTasksInterfaceContainer input {
@@ -207,10 +216,6 @@
   width: 40px;
   font-size: 25px;
   margin: 0;
-}
-
-input#description {
-  height: 45px;
 }
 
 .taskPriority {
@@ -234,8 +239,9 @@ input#description {
 
 .saveButton {
   display: flex;
-  width: 100%;
   justify-content: flex-end;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .saveButton button {
@@ -243,7 +249,7 @@ input#description {
 }
 
 .filterConfig {
-  height: 130px;
+  height: 120px;
 }
 
 .filterConfig select {
@@ -269,7 +275,7 @@ input#description {
 }
 
 .taskConclusion button {
-  width: 37%;
+  width: 130px;
 }
 
 .selected {
@@ -282,13 +288,46 @@ input#description {
     width: 650px;
   }
 
-  #filterButtons button {
-    width: 90px;
+  .header div {
+    justify-content: space-around;
+  }
+
+  .header button {
+    font-size: 18px;
+    height: 50px;
     padding: 10px;
-    margin: 5px;
+  }
+
+  .addTaskInterfaceContainer {
+    width: 400px;
+  }
+
+  .filterTasksInterfaceContainer {
+    width: 300px;
+    height: 230px;
+  }
+
+  #filterButtons button {
     font-size: 16px;
   }
-  
+
+  .taskInfo h1 {
+    font-size: 32px;
+  }
+
+  .taskInfo p {
+    margin-left: 10px;
+    font-size: 20px;
+  }
+
+  .taskButtons button {
+    font-size: 18px;
+  }
+
+  #doneButton {
+    height: 60px;
+  }
+
   #currentFilter h2 {
     font-size: 24px;
   }
