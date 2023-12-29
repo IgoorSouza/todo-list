@@ -51,6 +51,7 @@ function App() {
     let task = JSON.parse(getTask);
     if (editMode.enabled) {
       tasks[editMode.taskIndex] = task;
+      setTasks([...tasks])
     } else {
       setTasks([...tasks, task]);
     }
