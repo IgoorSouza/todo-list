@@ -1,0 +1,286 @@
+@charset "UTF-8";
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+}
+
+* button {
+  font-weight: bold;
+  color: white;
+  background-color: rgb(0, 140, 255);
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+* button:hover {
+  cursor: pointer;
+  background-color: rgb(0, 123, 224);
+}
+
+.App {
+  width: 450px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin: auto;
+}
+
+.header {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header div {
+  display: flex;
+  justify-content: space-around;
+}
+
+.header button {
+  padding: 10px;
+}
+
+.list {
+  margin-top: 30px;
+  width: 90%;
+}
+
+.list > div {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  margin: 10px;
+  padding: 10px;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.404);
+  border-radius: 15px;
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+#filterButtons {
+  width: 280px;
+  flex-flow: column;
+}
+
+#currentFilter {
+  margin-top: 5px;
+  padding: 5px;
+}
+
+#currentFilter h2 {
+  margin-bottom: 5px;
+}
+
+#filterButtons button {
+  width: 90px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.taskInfo {
+  width: 65%;
+}
+
+.taskInfo h1 {
+  margin-left: 10px;
+}
+
+.taskInfo p {
+  margin-top: 5px;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.importantTask {
+  display: flex;
+  margin-top: 50px;
+}
+
+.importantTask img {
+  width: 25px;
+}
+
+.importantTask h4 {
+  margin-left: 8px;
+  margin-top: 4px;
+}
+
+.taskButtons {
+  width: 32%;
+  display: flex;
+  flex-flow: column;
+}
+
+.taskButtons button {
+  background-color: white;
+  color: rgb(0, 140, 255);
+  border: 2px solid rgb(0, 140, 255);
+}
+
+.taskButtons button:hover {
+  background-color: rgb(236, 236, 236);
+}
+
+#doneButton {
+  border: 2px solid rgb(0, 180, 0);
+  color: rgb(0, 180, 0);
+}
+
+.done {
+  background-color: rgb(0, 180, 0) !important;
+  color: white !important;
+}
+
+.taskDone {
+  background: url("src/assets/icons/done.png") no-repeat left;
+  background-size: 140px;
+}
+
+.addTaskInterface,
+.filterTasksInterface {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.315);
+  width: 100vw;
+  height: 100vh;
+}
+
+.addTaskInterfaceContainer,
+.filterTasksInterfaceContainer {
+  width: 400px;
+  height: 330px;
+  border-radius: 20px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.404);
+}
+
+.addTaskInterfaceContainer h3,
+.filterTasksInterfaceContainer h3 {
+  font-size: 25px;
+}
+
+.addTaskInterfaceContainer input,
+.filterTasksInterfaceContainer input {
+  width: 90%;
+  height: 30px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  padding-left: 5px;
+}
+
+.filterTasksInterfaceContainer {
+  width: 350px;
+  height: 230px;
+}
+
+.filterTasksInterfaceContainer input {
+  margin-top: 10px;
+}
+
+.addTaskInterfaceHeader,
+.filterTasksInterfaceHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+#closeButton {
+  width: 40px;
+  font-size: 25px;
+  margin: 0;
+}
+
+input#description {
+  height: 45px;
+}
+
+.taskPriority {
+  display: flex;
+}
+
+.taskPriority h3 {
+  margin-top: 5px;
+  margin-right: 20px;
+}
+
+.taskPriority button,
+.taskConclusion button {
+  background-color: white;
+  color: rgb(0, 140, 255);
+  border: 2px solid rgb(0, 140, 255);
+  width: 70px;
+  height: 35px;
+  margin-right: 10px;
+}
+
+.saveButton {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.saveButton button {
+  padding: 8px;
+}
+
+.filterConfig {
+  height: 130px;
+}
+
+.filterConfig select {
+  width: 130px;
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.filterConfig select:hover {
+  cursor: pointer;
+  background-color: rgb(243, 243, 243);
+}
+
+.filterConfig option {
+  background-color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.filterConfig button {
+  margin-top: 8px;
+}
+
+.taskConclusion button {
+  width: 37%;
+}
+
+.selected {
+  background-color: rgb(0, 140, 255) !important;
+  color: white !important;
+}
+
+@media screen and (min-width: 700px) {
+  .App {
+    width: 650px;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .App {
+    width: 900px;
+  }
+
+  #taskButtons button {
+    height: 35px;
+  }
+}
