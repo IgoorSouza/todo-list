@@ -24,7 +24,7 @@
 }
 
 .App {
-  width: 450px;
+  width: 350px;
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -43,13 +43,17 @@
   justify-content: space-around;
 }
 
+.header h1 {
+  font-size: 30px;
+}
+
 .header button {
   padding: 10px;
 }
 
 .list {
   margin-top: 30px;
-  width: 90%;
+  width: 100%;
 }
 
 .list > div {
@@ -69,23 +73,27 @@
   flex-flow: column;
 }
 
+#filterButtons button {
+  width: 90px;
+  padding: 10px;
+  margin: 5px;
+  font-size: 15px;
+}
+
 #currentFilter {
   margin-top: 5px;
   padding: 5px;
 }
 
 #currentFilter h2 {
-  margin-bottom: 5px;
-}
-
-#filterButtons button {
-  width: 90px;
-  padding: 10px;
-  margin: 5px;
+  font-size: 22px;
 }
 
 .taskInfo {
   width: 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .taskInfo h1 {
@@ -100,11 +108,16 @@
 
 .importantTask {
   display: flex;
-  margin-top: 50px;
+  align-items: center;
 }
 
-.importantTask img {
-  width: 25px;
+.importantTask div {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: #ffd900;
+  border: 2px solid black;
 }
 
 .importantTask h4 {
@@ -136,11 +149,6 @@
 .done {
   background-color: rgb(0, 180, 0) !important;
   color: white !important;
-}
-
-.taskDone {
-  background: url("src/assets/icons/done.png") no-repeat left;
-  background-size: 140px;
 }
 
 .addTaskInterface,
@@ -273,11 +281,27 @@ input#description {
   .App {
     width: 650px;
   }
+
+  #filterButtons button {
+    width: 90px;
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+  }
+  
+  #currentFilter h2 {
+    font-size: 24px;
+  }
 }
 
 @media screen and (min-width: 1100px) {
   .App {
     width: 900px;
+  }
+
+  .list {
+    margin-top: 30px;
+    width: 90%;
   }
 
   #taskButtons button {

@@ -96,14 +96,13 @@ export default function TaskList(props) {
         return (
           <div key={index} className={task.done ? "taskDone" : ""}>
             <div className="taskInfo">
-              <h1>{task.title}</h1>
-              <p>{task.description}</p>
+              <div>
+                <h1>{task.title}</h1>
+                <p>{task.description}</p>
+              </div>
 
               <div className="importantTask">
-                <img
-                  src="src/assets/icons/important.png"
-                  alt="Tarefa importante"
-                />{" "}
+                <div><h2>!</h2></div>
                 <h4>Tarefa importante</h4>
               </div>
             </div>
@@ -146,8 +145,10 @@ export default function TaskList(props) {
         return (
           <div key={index} className={task.done ? "taskDone" : ""}>
             <div className="taskInfo">
-              <h1>{task.title}</h1>
-              <p>{task.description}</p>
+              <div>
+                <h1>{task.title}</h1>
+                <p>{task.description}</p>
+              </div>
             </div>
 
             <div className="taskButtons">
