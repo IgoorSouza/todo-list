@@ -1,108 +1,41 @@
-import { useState, useEffect } from "react";
+import { configureStore, combineReducers } from "@reduxjs/toolkit"
+import { Provider } from "react-redux"
+
 import "./index.css";
+
 import Header from "./components/Header";
 import AddTaskInterface from "./components/AddTaskInterface";
 import FilterTasksInterface from "./components/FilterTaskInterface";
 import TaskList from "./components/TaskList";
 
+import tasksReducer from "./reducers/tasksReducer"
+import filterReducer from "./reducers/filterReducer"
+import editModeReducer from "./reducers/editModeReducer"
+import addTaskInterfaceReducer from "./reducers/addTaskInterfaceReducer"
+import filterTasksInterfaceReducer from "./reducers/filterTasksInterfaceReducer"
+
+const allReducers = combineReducers({
+  tasksReducer,
+  filterReducer,
+  editModeReducer,
+  addTaskInterfaceReducer,
+  filterTasksInterfaceReducer,
+})
+
+const store = configureStore({ reducer: { allReducers }})
+
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [addTaskInterface, setAddTaskInterface] = useState(false);
-  const [filterTasksInterface, setFilterTasksInterface] = useState(false);
-  const [filter, setFilter] = useState(false);
-  const [editMode, setEditMode] = useState({
-    enabled: false,
-    task: null,
-    taskIndex: null,
-  });
-
-  useEffect(() => {
-    let getTasksFromStorage = JSON.parse(localStorage.getItem("tasks"));
-    if (getTasksFromStorage && getTasksFromStorage.length !== 0) {
-      setTasks(JSON.parse(localStorage.getItem("tasks")));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
-
-  function toggleFilterTasksInterface() {
-    setFilterTasksInterface((state) => !state);
-  }
-
-  function filterTasks(filter) {
-    setFilter(filter);
-    toggleFilterTasksInterface();
-  }
-
-  function removeFilter() {
-    setFilter(false);
-  }
-
-  function toggleAddTaskInterface() {
-    setAddTaskInterface((state) => !state);
-    if (editMode.enabled) {
-      setEditMode({ enabled: false, task: null, taskIndex: null });
-    }
-  }
-
-  function saveTask(getTask) {
-    let task = JSON.parse(getTask);
-    if (editMode.enabled) {
-      tasks[editMode.taskIndex] = task;
-      setTasks([...tasks])
-    } else {
-      setTasks([...tasks, task]);
-    }
-    toggleAddTaskInterface();
-  }
-
-  function setTaskAsDone(taskIndex) {
-    tasks[taskIndex].done = !tasks[taskIndex].done;
-    setTasks([...tasks]);
-  }
-
-  function editTask(task, taskIndex) {
-    setEditMode({
-      enabled: true,
-      task: JSON.parse(task),
-      taskIndex: taskIndex,
-    });
-    setAddTaskInterface(true);
-  }
-
-  function removeTask(taskIndex) {
-    tasks.splice(taskIndex, 1);
-    setTasks([...tasks]);
-  }
-
   return (
     <div className="App">
-      <Header toggleAddTaskInterface={toggleAddTaskInterface} />
+      <Provider store={store}>
+        <Header />
 
-      <AddTaskInterface
-        addTaskInterface={addTaskInterface}
-        toggleAddTaskInterface={toggleAddTaskInterface}
-        saveTask={saveTask}
-        editMode={editMode}
-      />
+        <AddTaskInterface />
 
-      <FilterTasksInterface
-        filterTasksInterface={filterTasksInterface}
-        toggleFilterTasksInterface={toggleFilterTasksInterface}
-        filterTasks={filterTasks}
-      />
+        <FilterTasksInterface />
 
-      <TaskList
-        tasks={tasks}
-        filter={filter}
-        removeFilter={removeFilter}
-        setTaskAsDone={setTaskAsDone}
-        editTask={editTask}
-        removeTask={removeTask}
-        toggleFilterTasksInterface={toggleFilterTasksInterface}
-      />
+        <TaskList />
+      </Provider>
     </div>
   );
 }

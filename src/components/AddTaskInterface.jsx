@@ -1,23 +1,37 @@
 import { useState, useRef, useEffect } from "react";
-import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from "react-redux";
 
 const titleRegex = /\w/;
 
-export default function TaskInterface(props) {
+export default function TaskInterface() {
   const [taskPriority, setTaskPriority] = useState("low");
   const taskTitleInput = useRef();
   const taskDescriptionInput = useRef();
 
-  useEffect(() => {
-    if (props.editMode.enabled) {
-      taskTitleInput.current.value = props.editMode.task.title;
-      taskDescriptionInput.current.value = props.editMode.task.description;
-      setTaskPriority(props.editMode.task.priority);
-    }
-  }, [props.editMode]);
+  const tasks = useSelector((state) => {
+    return state.allReducers.tasksReducer;
+  });
 
-  function getTaskPriority(event) {
-    setTaskPriority(event.target.id);
+  const addTaskInterface = useSelector((state) => {
+    return state.allReducers.addTaskInterfaceReducer;
+  });
+
+  const editMode = useSelector((state) => {
+    return state.allReducers.editModeReducer;
+  });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (editMode.enabled) {
+      taskTitleInput.current.value = editMode.task.title;
+      taskDescriptionInput.current.value = editMode.task.description;
+      setTaskPriority(editMode.task.priority);
+    }
+  }, [editMode]);
+
+  function getTaskPriority(priority) {
+    setTaskPriority(priority);
   }
 
   function getTaskValues() {
@@ -25,25 +39,46 @@ export default function TaskInterface(props) {
       title: taskTitleInput.current.value,
       description: taskDescriptionInput.current.value,
       priority: taskPriority,
-      done: props.editMode.enabled ? props.editMode.task.done : false,
+      done: editMode.enabled ? editMode.task.done : false,
     };
 
     return task;
+  }
+
+  function saveTask(task) {
+    if (editMode.enabled) {
+      let newTasks = [...tasks];
+      newTasks[editMode.taskIndex] = task;
+      dispatch({ type: "updateTasks", payload: newTasks });
+      dispatch({
+        type: "setEditMode",
+        payload: { enabled: false, task: null, taskIndex: null },
+      });
+    } else {
+      dispatch({ type: "updateTasks", payload: [...tasks, task] });
+    }
+
+    dispatch({ type: "toggleAddTaskInterface" });
   }
 
   function closeInterface(event) {
     let task = getTaskValues();
 
     if (event.target.id === "closeButton") {
-      props.toggleAddTaskInterface();
+      dispatch({ type: "toggleAddTaskInterface" });
+
+      if (editMode.enabled) {
+        dispatch({
+          type: "setEditMode",
+          payload: { enabled: false, task: null, taskIndex: null },
+        });
+      }
 
       taskTitleInput.current.value = "";
       taskDescriptionInput.current.value = "";
       setTaskPriority("low");
     } else if (titleRegex.test(task.title)) {
-      props.editMode.enabled
-        ? props.saveTask(JSON.stringify(task), props.editMode.taskIndex)
-        : props.saveTask(JSON.stringify(task));
+      saveTask(task);
 
       taskTitleInput.current.value = "";
       taskDescriptionInput.current.value = "";
@@ -51,7 +86,7 @@ export default function TaskInterface(props) {
     }
   }
 
-  if (props.addTaskInterface) {
+  if (addTaskInterface) {
     return (
       <div className="addTaskInterface">
         <div className="addTaskInterfaceContainer">
@@ -64,25 +99,23 @@ export default function TaskInterface(props) {
           </div>
           <div className="taskTitle">
             <h3>Título:</h3>
-            <input name="titleInput"
+            <input
+              name="titleInput"
               type="text"
               autoComplete="off"
               ref={taskTitleInput}
-              defaultValue={
-                props.editMode.enabled ? props.editMode.task.title : ""
-              }
+              defaultValue={editMode.enabled ? editMode.task.title : ""}
             />
           </div>
           <div className="taskDescription">
             <h3>Descrição:</h3>
-            <input name="descriptionInput"
+            <input
+              name="descriptionInput"
               type="text"
               autoComplete="off"
               id="description"
               ref={taskDescriptionInput}
-              defaultValue={
-                props.editMode.enabled ? props.editMode.task.description : ""
-              }
+              defaultValue={editMode.enabled ? editMode.task.description : ""}
             />
           </div>
           <div className="taskPriority">
@@ -92,7 +125,7 @@ export default function TaskInterface(props) {
               <button
                 id="high"
                 className={taskPriority === "high" ? "selected" : ""}
-                onClick={getTaskPriority}
+                onClick={() => getTaskPriority("high")}
               >
                 Alta
               </button>
@@ -100,7 +133,7 @@ export default function TaskInterface(props) {
               <button
                 id="low"
                 className={taskPriority === "low" ? "selected" : ""}
-                onClick={getTaskPriority}
+                onClick={() => getTaskPriority("low")}
               >
                 Baixa
               </button>
@@ -113,11 +146,4 @@ export default function TaskInterface(props) {
       </div>
     );
   }
-}
-
-TaskInterface.propTypes = {
-  addTaskInterface: PropTypes.bool.isRequired,
-  toggleAddTaskInterface: PropTypes.func.isRequired,
-  saveTask: PropTypes.func.isRequired,
-  editMode: PropTypes.object.isRequired
 }

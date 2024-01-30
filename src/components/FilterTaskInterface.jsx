@@ -1,23 +1,18 @@
 import { useState, useRef } from "react";
-import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from "react-redux";
 
 const titleRegex = /\w/;
 
-export default function FilterTasksInterface(props) {
+export default function FilterTasksInterface() {
   const [selectInput, setSelectInput] = useState("title");
-  const textInput = useRef();
   const [filter, setFilter] = useState({ type: selectInput, value: "" });
+  const textInput = useRef();
 
-  function getPriorityFilter(event) {
-    setFilter({ type: selectInput, value: event.target.id });
-  }
+  const filterTasksInterface = useSelector((state) => {
+    return state.allReducers.filterTasksInterfaceReducer;
+  });
 
-  function getConclusionFilter(event) {
-    setFilter({
-      type: selectInput,
-      value: event.target.id === "done" ? true : false,
-    });
-  }
+  const dispatch = useDispatch();
 
   function getFilter() {
     if (filter.type === "title") {
@@ -33,16 +28,17 @@ export default function FilterTasksInterface(props) {
 
   function closeInterface(event) {
     if (event.target.id === "closeButton") {
-      props.toggleFilterTasksInterface();
+      dispatch({ type: "toggleFilterTasksInterface" });
     } else {
       const filter = getFilter();
       if (filter) {
-        props.filterTasks(filter);
+        dispatch({ type: "updateFilter", payload: filter });
+        dispatch({ type: "toggleFilterTasksInterface" });
       }
     }
   }
 
-  if (props.filterTasksInterface) {
+  if (filterTasksInterface) {
     return (
       <div className="filterTasksInterface">
         <div className="filterTasksInterfaceContainer">
@@ -69,24 +65,25 @@ export default function FilterTasksInterface(props) {
             </select>
 
             <div className="filterInfo">
-              {selectInput === "title" ? (
-                <input name="titleInput"
+              {selectInput === "title" && (
+                <input
+                  name="titleInput"
                   type="text"
                   autoComplete="off"
-                  placeholder="Buscar pelo título..."
+                  placeholder="Filtrar pelo título..."
                   defaultValue={filter.value}
                   ref={textInput}
                 />
-              ) : (
-                ""
               )}
 
-              {selectInput === "priority" ? (
+              {selectInput === "priority" && (
                 <div className="taskPriority">
                   <button
                     id="high"
                     className={filter.value === "high" ? "selected" : ""}
-                    onClick={getPriorityFilter}
+                    onClick={() =>
+                      setFilter({ type: selectInput, value: "high" })
+                    }
                   >
                     Alta
                   </button>
@@ -94,21 +91,23 @@ export default function FilterTasksInterface(props) {
                   <button
                     id="low"
                     className={filter.value === "low" ? "selected" : ""}
-                    onClick={getPriorityFilter}
+                    onClick={() =>
+                      setFilter({ type: selectInput, value: "low" })
+                    }
                   >
                     Baixa
                   </button>
                 </div>
-              ) : (
-                ""
               )}
 
-              {selectInput === "conclusion" ? (
+              {selectInput === "conclusion" && (
                 <div className="taskConclusion">
                   <button
                     id="done"
                     className={filter.value === true ? "selected" : ""}
-                    onClick={getConclusionFilter}
+                    onClick={() =>
+                      setFilter({ type: selectInput, value: true })
+                    }
                   >
                     Concluída
                   </button>
@@ -116,13 +115,13 @@ export default function FilterTasksInterface(props) {
                   <button
                     id="notDone"
                     className={filter.value === false ? "selected" : ""}
-                    onClick={getConclusionFilter}
+                    onClick={() =>
+                      setFilter({ type: selectInput, value: false })
+                    }
                   >
                     Não Concluída
                   </button>
                 </div>
-              ) : (
-                ""
               )}
             </div>
           </div>
@@ -134,10 +133,4 @@ export default function FilterTasksInterface(props) {
       </div>
     );
   }
-}
-
-FilterTasksInterface.propTypes = {
-  filterTasksInterface: PropTypes.bool.isRequired,
-  toggleFilterTasksInterface: PropTypes.func.isRequired,
-  filterTasks: PropTypes.func.isRequired
 }

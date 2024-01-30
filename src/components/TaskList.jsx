@@ -1,44 +1,96 @@
-import PropTypes from 'prop-types'
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-export default function TaskList(props) {
+export default function TaskList() {
+  const tasks = useSelector((state) => {
+    return state.allReducers.tasksReducer;
+  });
+
+  const filter = useSelector((state) => {
+    return state.allReducers.filterReducer;
+  });
+
+  const dispatch = useDispatch();
+
   let highPriorityTasks = [];
   let lowPriorityTasks = [];
 
-  if (props.filter) {
-    switch (props.filter.type) {
+  useEffect(() => {
+    let getTasksFromStorage = JSON.parse(localStorage.getItem("tasks"));
+    if (getTasksFromStorage && getTasksFromStorage.length !== 0) {
+      dispatch({ type: "updateTasks", payload: getTasksFromStorage });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  function setTaskAsDone(taskIndex) {
+    let newTask = {
+      title: tasks[taskIndex].title,
+      description: tasks[taskIndex].description,
+      priority: tasks[taskIndex].priority,
+      done: !tasks[taskIndex].done,
+    }
+
+    let newTasks = [...tasks]
+
+    newTasks[taskIndex] = newTask
+
+    dispatch({type: "updateTasks", payload: newTasks })
+  }
+
+  function editTask(task, taskIndex) {
+    dispatch({
+      type: "setEditMode",
+      payload: {
+        enabled: true,
+        task: JSON.parse(task),
+        taskIndex: taskIndex,
+      },
+    });
+
+    dispatch({ type: "toggleAddTaskInterface" });
+  }
+
+  function removeTask(taskIndex) {
+    let newTasks = [...tasks];
+    newTasks.splice(taskIndex, 1);
+    dispatch({ type: "updateTasks", payload: newTasks });
+  }
+
+  if (filter) {
+    switch (filter.type) {
       case "title": {
-        const titleRegex = new RegExp(props.filter.value);
-        highPriorityTasks = props.tasks.filter(
+        const titleRegex = new RegExp(filter.value);
+        highPriorityTasks = tasks.filter(
           (task) => task.priority === "high" && titleRegex.test(task.title)
         );
 
-        lowPriorityTasks = props.tasks.filter(
+        lowPriorityTasks = tasks.filter(
           (task) => task.priority === "low" && titleRegex.test(task.title)
         );
         break;
       }
 
       case "priority":
-        if (props.filter.value === "high") {
-          highPriorityTasks = props.tasks.filter(
-            (task) => task.priority === "high"
-          );
+        if (filter.value === "high") {
+          highPriorityTasks = tasks.filter((task) => task.priority === "high");
           lowPriorityTasks = [];
         } else {
-          lowPriorityTasks = props.tasks.filter(
-            (task) => task.priority === "low"
-          );
+          lowPriorityTasks = tasks.filter((task) => task.priority === "low");
           highPriorityTasks = [];
         }
         break;
 
       case "conclusion":
-        highPriorityTasks = props.tasks.filter(
-          (task) => task.priority === "high" && task.done === props.filter.value
+        highPriorityTasks = tasks.filter(
+          (task) => task.priority === "high" && task.done === filter.value
         );
 
-        lowPriorityTasks = props.tasks.filter(
-          (task) => task.priority === "low" && task.done === props.filter.value
+        lowPriorityTasks = tasks.filter(
+          (task) => task.priority === "low" && task.done === filter.value
         );
         break;
 
@@ -46,43 +98,48 @@ export default function TaskList(props) {
         break;
     }
   } else {
-    highPriorityTasks = props.tasks.filter((task) => task.priority === "high");
-    lowPriorityTasks = props.tasks.filter((task) => task.priority === "low");
+    highPriorityTasks = tasks.filter((task) => task.priority === "high");
+    lowPriorityTasks = tasks.filter((task) => task.priority === "low");
   }
 
   return (
     <div className="list">
-      {props.tasks.length > 0 || props.filter ? (
+      {tasks.length > 0 || filter ? (
         <div id="filterButtons">
           <div>
-            <button onClick={props.toggleFilterTasksInterface}>
+            <button
+              onClick={() => dispatch({ type: "toggleFilterTasksInterface" })}
+            >
               Filtrar tarefas
             </button>
-            <button onClick={props.removeFilter}>Remover Filtros</button>
+            <button
+              onClick={() => dispatch({ type: "updateFilter", payload: false })}
+            >
+              Remover Filtros
+            </button>
           </div>
           <div id="currentFilter">
             <h2>Filtro atual:</h2>
             <h3>
-              {!props.filter ? "Nenhum" : null}
+              {!filter ? "Nenhum" : null}
 
-              {props.filter.type === "title"
-                ? `Tarefas cujo título possua "${props.filter.value}"`
+              {filter.type === "title"
+                ? `Tarefas cujo título possua "${filter.value}"`
                 : null}
 
-              {props.filter.type === "priority" && props.filter.value === "high"
+              {filter.type === "priority" && filter.value === "high"
                 ? "Tarefas de alta prioridade"
                 : null}
 
-              {props.filter.type === "priority" && props.filter.value === "low"
+              {filter.type === "priority" && filter.value === "low"
                 ? "Tarefas de baixa prioridade"
                 : null}
 
-              {props.filter.type === "conclusion" && props.filter.value === true
+              {filter.type === "conclusion" && filter.value === true
                 ? "Tarefas concluídas"
                 : null}
 
-              {props.filter.type === "conclusion" &&
-              props.filter.value === false
+              {filter.type === "conclusion" && filter.value === false
                 ? "Tarefas não concluídas"
                 : null}
             </h3>
@@ -102,7 +159,9 @@ export default function TaskList(props) {
               </div>
 
               <div className="importantTask">
-                <div><h2>!</h2></div>
+                <div>
+                  <h2>!</h2>
+                </div>
                 <h4>Tarefa importante</h4>
               </div>
             </div>
@@ -112,8 +171,8 @@ export default function TaskList(props) {
                 id="doneButton"
                 className={task.done ? "done" : ""}
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.setTaskAsDone(taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  setTaskAsDone(taskIndex);
                 }}
               >
                 {task.done ? "Concluída" : "Marcar como concluída"}
@@ -121,8 +180,8 @@ export default function TaskList(props) {
 
               <button
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.editTask(JSON.stringify(task), taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  editTask(JSON.stringify(task), taskIndex);
                 }}
               >
                 Editar
@@ -130,8 +189,8 @@ export default function TaskList(props) {
 
               <button
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.removeTask(taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  removeTask(taskIndex);
                 }}
               >
                 Remover
@@ -156,8 +215,8 @@ export default function TaskList(props) {
                 id="doneButton"
                 className={task.done ? "done" : ""}
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.setTaskAsDone(taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  setTaskAsDone(taskIndex);
                 }}
               >
                 {task.done ? "Concluída" : "Marcar como concluída"}
@@ -165,8 +224,8 @@ export default function TaskList(props) {
 
               <button
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.editTask(JSON.stringify(task), taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  editTask(JSON.stringify(task), taskIndex);
                 }}
               >
                 Editar
@@ -174,8 +233,8 @@ export default function TaskList(props) {
 
               <button
                 onClick={() => {
-                  let taskIndex = props.tasks.indexOf(task);
-                  props.removeTask(taskIndex);
+                  let taskIndex = tasks.indexOf(task);
+                  removeTask(taskIndex);
                 }}
               >
                 Remover
@@ -186,17 +245,4 @@ export default function TaskList(props) {
       })}
     </div>
   );
-}
-
-TaskList.propTypes = {
-  tasks: PropTypes.array.isRequired,
-  filter: PropTypes.oneOfType([ 
-    PropTypes.bool.isRequired, 
-    PropTypes.object.isRequired 
-  ]),
-  removeFilter: PropTypes.func.isRequired,
-  setTaskAsDone: PropTypes.func.isRequired,
-  editTask: PropTypes.func.isRequired,
-  removeTask: PropTypes.func.isRequired,
-  toggleFilterTasksInterface: PropTypes.func.isRequired
 }
