@@ -32,13 +32,13 @@ export default function TaskList() {
       description: tasks[taskIndex].description,
       priority: tasks[taskIndex].priority,
       done: !tasks[taskIndex].done,
-    }
+    };
 
-    let newTasks = [...tasks]
+    let newTasks = [...tasks];
 
-    newTasks[taskIndex] = newTask
+    newTasks[taskIndex] = newTask;
 
-    dispatch({type: "updateTasks", payload: newTasks })
+    dispatch({ type: "updateTasks", payload: newTasks });
   }
 
   function editTask(task, taskIndex) {
@@ -55,8 +55,10 @@ export default function TaskList() {
   }
 
   function removeTask(taskIndex) {
-    let newTasks = [...tasks];
-    newTasks.splice(taskIndex, 1);
+    const newTasks = tasks.filter((task, index) => {
+      return index != taskIndex;
+    });
+    
     dispatch({ type: "updateTasks", payload: newTasks });
   }
 
