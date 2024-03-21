@@ -8,7 +8,6 @@ export default function Header() {
       <div>
         <h1>Lista de tarefas</h1>
         <button
-          id="addTask"
           onClick={() => dispatch({ type: "toggleAddTaskInterface" })}
         >
           Adicionar tarefa
