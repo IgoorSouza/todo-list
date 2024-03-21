@@ -29,11 +29,8 @@ function App() {
     <div className="App">
       <Provider store={store}>
         <Header />
-
         <AddTaskInterface />
-
         <FilterTasksInterface />
-
         <TaskList />
       </Provider>
     </div>
