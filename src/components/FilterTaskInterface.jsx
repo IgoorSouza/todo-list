@@ -14,6 +14,7 @@ export default function FilterTasksInterface() {
 
   function applyFilter() {
     if (filter.type === "title" && titleRegex.test(textInput.current.value)) {
+      setFilter({...filter, value: textInput.current.value})
       dispatch({ type: "updateFilter", payload: {...filter, value: textInput.current.value} });
     } else if (filter.value != null) {
       dispatch({ type: "updateFilter", payload: filter });
