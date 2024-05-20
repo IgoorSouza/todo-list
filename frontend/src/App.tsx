@@ -1,5 +1,6 @@
-import { useState } from "react";
-import Modal from "./components/Modal";
+import { useEffect, useState } from "react";
+import api from "./services/axios";
+import AuthForm from "./components/AuthForm";
 import Header from "./components/Header";
 import Task from "./components/Task";
 
@@ -8,33 +9,46 @@ interface User {
   token: string;
 }
 
-const tasks = [
-  {
-    id: 1,
-    title: "Lavar a louça",
-    done: true,
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-  },
-  {
-    id: 2,
-    title: "Fazer ajustes no site",
-    description: "Mudar a cor do fundo",
-    done: false,
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-  },
-];
+interface Tasks {
+  id: number;
+  title: string;
+  description?: string;
+  done: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default function App() {
-  const [user, setUser] = useState<User | null>({
-    name: "Igor",
-    token: "",
-  });
-  const [modal, setModal] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [authForm, setAuthForm] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<Tasks[]>([] as Tasks[]);
+  const [loading, setLoading] = useState(true);
 
-  if (modal) {
-    return <Modal modal={modal} setModal={setModal} />;
+  useEffect(() => {
+    const getAuthData = localStorage.getItem("AuthData");
+
+    if (getAuthData) {
+      const authData = getAuthData && JSON.parse(getAuthData);
+      setUser(authData);
+      api.defaults.headers.common.Authorization = `Bearer ${authData.token}`;
+    }
+  }, []);
+
+  useEffect(() => {
+    async function getTasks() {
+      await api.get("/tasks").then((response) => {
+        setTasks(response.data);
+        setLoading(false);
+      });
+    }
+
+    getTasks();
+  }, [user]);
+
+  if (authForm) {
+    return (
+      <AuthForm type={authForm} setAuthForm={setAuthForm} setUser={setUser} />
+    );
   }
 
   return (
@@ -42,22 +56,30 @@ export default function App() {
       <Header
         username={user?.name}
         setUser={setUser}
-        setModal={setModal}
+        setAuthForm={setAuthForm}
       />
 
       {user ? (
         <>
-          <button
-            className="self-start px-3 py-2 mt-8 font-bold rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90 md:text-xl"
-            onClick={() => setModal("addTask")}
-          >
+          <button className="self-start px-3 py-2 mt-8 font-bold rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90 md:text-xl">
             Adicionar tarefa
           </button>
 
           <div className="flex flex-wrap max-sm:justify-center gap-5 py-8">
-            {tasks.map((task) => {
-              return <Task task={task} key={task.id} />;
-            })}
+            {loading ? (
+              <h1 className="text-xl md:text-2xl">Carregando tarefas...</h1>
+            ) : tasks.length > 0 ? (
+              tasks.map((task) => {
+                task.createdAt = new Date(task.createdAt);
+                task.updatedAt = new Date(task.updatedAt);
+
+                return <Task task={task} setTasks={setTasks} key={task.id} />;
+              })
+            ) : (
+              <h1 className="text-center text-lg md:text-2xl">
+                Você ainda não registrou nenhuma tarefa.
+              </h1>
+            )}
           </div>
         </>
       ) : (

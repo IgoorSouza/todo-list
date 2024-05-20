@@ -15,10 +15,10 @@ interface User {
 interface Props {
   username: string | undefined;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  setModal: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthForm: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export default function Header({ username, setUser, setModal }: Props) {
+export default function Header({ username, setUser, setAuthForm }: Props) {
   return (
     <header className="flex justify-between items-center mx-auto">
       <h1 className="font-bold text-xl md:text-3xl">Lista de Tarefas</h1>
@@ -33,7 +33,13 @@ export default function Header({ username, setUser, setModal }: Props) {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
-            <DropdownMenuItem className="flex w-24 px-3 py-2 mt-1 rounded-lg bg-slate-500 cursor-pointer hover:bg-slate-400 outline-none" onClick={() => setUser(null)}>
+            <DropdownMenuItem
+              className="flex w-24 px-3 py-2 mt-1 rounded-lg bg-slate-500 cursor-pointer hover:bg-slate-400 outline-none"
+              onClick={() => {
+                setUser(null);
+                localStorage.removeItem("AuthData");
+              }}
+            >
               <img src={logout} className="mr-[6px]" />
               Sair
             </DropdownMenuItem>
@@ -43,14 +49,14 @@ export default function Header({ username, setUser, setModal }: Props) {
         <div className="flex flex-col font-bold md:flex-row md:text-lg">
           <button
             className="px-3 py-2 max-md:mb-2 rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90 md:mr-3"
-            onClick={() => setModal("login")}
+            onClick={() => setAuthForm("login")}
           >
             Entrar
           </button>
 
           <button
             className="px-3 py-2 rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90"
-            onClick={() => setModal("register")}
+            onClick={() => setAuthForm("register")}
           >
             Criar conta
           </button>
