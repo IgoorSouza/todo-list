@@ -1,16 +1,17 @@
+import { Request, Response } from "express";
 import {
   getTasks,
   createTask,
   updateTask,
   deleteTask,
-} from "../repositories/tasks-repository.js";
+} from "../repositories/tasks-repository";
 import {
   createValidation,
   updateValidation,
   removeValidation,
-} from "../validations/tasks-validation.js";
+} from "../validations/tasks-validation";
 
-export async function get(request, response) {
+export async function get(request: Request, response: Response) {
   try {
     const tasks = await getTasks(request.body.userId);
 
@@ -20,9 +21,9 @@ export async function get(request, response) {
   }
 }
 
-export async function create(request, response) {
+export async function create(request: Request, response: Response) {
   try {
-    await createValidation.validate(request.body);
+    createValidation.parse(request.body);
 
     const task = await createTask(request.body);
 
@@ -32,9 +33,9 @@ export async function create(request, response) {
   }
 }
 
-export async function update(request, response) {
+export async function update(request: Request, response: Response) {
   try {
-    await updateValidation.validate(request.body);
+    updateValidation.parse(request.body);
 
     const task = await updateTask(request.body);
 
@@ -44,9 +45,9 @@ export async function update(request, response) {
   }
 }
 
-export async function remove(request, response) {
+export async function remove(request: Request, response: Response) {
   try {
-    await removeValidation.validate(request.body);
+    removeValidation.parse(request.body);
 
     await deleteTask(request.body);
 

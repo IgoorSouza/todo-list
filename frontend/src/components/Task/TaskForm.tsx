@@ -23,10 +23,14 @@ interface TaskData {
 }
 
 export default function TaskForm({ setTasks, setTaskForm }: Props) {
-  const [taskData, setTaskData] = useState<TaskData>({} as TaskData);
+  const [taskData, setTaskData] = useState<TaskData>({
+    title: "",
+    description: "",
+  });
 
   async function createTask(event: React.FormEvent) {
     event.preventDefault();
+    if (!/^(?!\s*$).+/.test(taskData.title)) return;
 
     try {
       await api.post("/tasks/create", taskData).then((response) => {

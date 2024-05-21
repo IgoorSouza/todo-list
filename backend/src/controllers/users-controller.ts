@@ -1,21 +1,24 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { createUser, getUser } from "../repositories/users-repository.js";
+import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+import jwt, { Secret } from "jsonwebtoken";
+import { createUser, getUser } from "../repositories/users-repository";
 import {
   registerValidation,
   loginValidation,
-} from "../validations/users-validation.js";
+} from "../validations/users-validation";
 
-export async function register(request, response) {
+const secret: Secret = process.env.JWT_SECRET ?? Math.random().toString(36);
+
+export async function register(request: Request, response: Response) {
   try {
-    await registerValidation.validate(request.body);
+    registerValidation.parse(request.body);
 
     request.body.password = await bcrypt.hash(request.body.password, 10);
 
     const user = await createUser(request.body);
 
     response.status(201).send(user);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === "P2002") {
       return response.status(409).send("Informed email already exists.");
     }
@@ -24,9 +27,9 @@ export async function register(request, response) {
   }
 }
 
-export async function login(request, response) {
+export async function login(request: Request, response: Response) {
   try {
-    await loginValidation.validate(request.body);
+    loginValidation.parse(request.body);
 
     const user = await getUser(request.body.email);
 
@@ -43,7 +46,7 @@ export async function login(request, response) {
       throw 401;
     }
 
-    const token = jwt.sign(user, process.env.JWT_SECRET);
+    const token = jwt.sign(user, secret);
 
     response.status(200).send({ name: user.name, token });
   } catch (error) {

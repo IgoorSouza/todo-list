@@ -42,7 +42,7 @@ export default function AuthInput({ label, type, required, setUserData }: Props)
           <div className="flex justify-center items-center w-[15%] md:w-[10%]">
             <img
               src={showPassword ? showIcon : hideIcon}
-              className="w-2/3"
+              className="w-2/3 cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
           </div>

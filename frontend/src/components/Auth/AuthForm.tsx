@@ -3,6 +3,7 @@ import api from "../../services/axios";
 import toast from "react-hot-toast";
 import Form from "../Form";
 import AuthInput from "./AuthInput";
+import { AxiosError } from "axios";
 
 interface User {
   name: string;
@@ -38,17 +39,19 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
         toast.success("Login realizado com sucesso!");
       });
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
         return toast.error("Senha incorreta.");
       }
 
-      if (error.response.status === 404) {
+      if (error instanceof AxiosError && error.response?.status === 404) {
         return toast.error(
           "Não existem usuários correspondentes ao email informado."
         );
       }
 
-      toast.error("Erro ao realizar login. Recarregue a página e tente novamente.");
+      toast.error(
+        "Erro ao realizar login. Recarregue a página e tente novamente."
+      );
     }
   }
 
@@ -61,13 +64,15 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
         login();
       });
     } catch (error) {
-      if (error.response.status === 409) {
+      if (error instanceof AxiosError && error.response?.status === 409) {
         return toast.error(
           "O email informado já foi utilizado por outro usuário."
         );
       }
 
-      toast.error("Erro ao criar conta. Recarregue a página e tente novamente.");
+      toast.error(
+        "Erro ao criar conta. Recarregue a página e tente novamente."
+      );
     }
   }
 

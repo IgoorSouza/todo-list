@@ -7,7 +7,7 @@ services:
       - 5432:5432
     container_name: db_postgres_todo
     # networks:
-    #   - back_db
+    #   - backend_db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
@@ -19,9 +19,21 @@ services:
   #    - 3000:3000
   #   container_name: backend_todo
   #   networks:
-  #     - back_db
+  #     - backend_db
+  #     - backend_frontend
   #   depends_on:
   #     - db
 
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+     - 4173:4173
+    container_name: frontend_todo
+    # networks: backend_frontend
+    # depends_on:
+    # - backend
+
 # networks:
-#   back_db:
+#   backend_db:
+#   backend_frontend

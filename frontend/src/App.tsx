@@ -51,7 +51,7 @@ export default function App() {
       }
     }
 
-    getTasks();
+    if (user) getTasks();
   }, [user]);
 
   if (authForm) {
@@ -65,7 +65,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen px-[5%] pt-5 text-white">
+    <div className="max-w-[1280px] mx-auto h-screen px-[5%] pt-5 text-white">
       <Header
         username={user?.name}
         setUser={setUser}
