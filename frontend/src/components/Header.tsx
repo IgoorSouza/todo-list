@@ -4,8 +4,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import profile from "../assets/profile.svg";
-import logout from "../assets/logout.svg";
+import profileIcon from "../assets/profile.svg";
+import logoutIcon from "../assets/logout.svg";
 
 interface User {
   name: string;
@@ -29,7 +29,7 @@ export default function Header({ username, setUser, setAuthForm }: Props) {
             <p className="mr-2 text-lg md:text-2xl break-words">
               {username.split(" ")[0]}
             </p>
-            <img src={profile} className="size-7 md:size-9" />
+            <img src={profileIcon} className="size-7 md:size-9" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
@@ -40,7 +40,7 @@ export default function Header({ username, setUser, setAuthForm }: Props) {
                 localStorage.removeItem("AuthData");
               }}
             >
-              <img src={logout} className="mr-[6px]" />
+              <img src={logoutIcon} className="mr-[6px]" />
               Sair
             </DropdownMenuItem>
           </DropdownMenuContent>

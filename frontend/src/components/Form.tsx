@@ -1,13 +1,20 @@
-import close from "../assets/close.svg";
+import closeIcon from "../assets/close.svg";
 
 interface Props {
   text: string;
   onSubmit: React.FormEventHandler;
-  setAuthForm: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthForm?: React.Dispatch<React.SetStateAction<string | null>>;
+  setTaskForm?: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
 }
 
-export default function Form({ text, onSubmit, setAuthForm, children }: Props) {
+export default function Form({
+  text,
+  onSubmit,
+  setAuthForm,
+  setTaskForm,
+  children,
+}: Props) {
   return (
     <div className="flex justify-center items-center h-screen">
       <form
@@ -15,9 +22,13 @@ export default function Form({ text, onSubmit, setAuthForm, children }: Props) {
         onSubmit={onSubmit}
       >
         <img
-          src={close}
+          src={closeIcon}
           className="cursor-pointer self-end"
-          onClick={() => setAuthForm(null)}
+          onClick={
+            setAuthForm
+              ? () => setAuthForm(null)
+              : () => setTaskForm && setTaskForm(false)
+          }
         />
 
         <h1 className="mb-2 font-bold text-2xl md:text-3xl text-center">

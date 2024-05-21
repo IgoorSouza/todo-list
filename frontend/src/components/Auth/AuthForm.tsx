@@ -1,8 +1,8 @@
-import { FormEvent, useState } from "react";
-import api from "../services/axios";
+import { useState } from "react";
+import api from "../../services/axios";
 import toast from "react-hot-toast";
-import Form from "./Form";
-import Input from "./Input";
+import Form from "../Form";
+import AuthInput from "./AuthInput";
 
 interface User {
   name: string;
@@ -24,15 +24,17 @@ interface Props {
 export default function AuthForm({ type, setUser, setAuthForm }: Props) {
   const [userData, setUserData] = useState<UserData>({} as UserData);
 
-  async function login(event?: FormEvent) {
+  async function login(event?: React.FormEvent) {
     event && event.preventDefault();
 
     try {
       await api.post("/users/login", userData).then((response) => {
         setUser(response.data);
         setAuthForm(null);
-        api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+
         localStorage.setItem("AuthData", JSON.stringify(response.data));
+        api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+
         toast.success("Login realizado com sucesso!");
       });
     } catch (error) {
@@ -46,11 +48,11 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
         );
       }
 
-      toast.error("Erro ao realizar login.");
+      toast.error("Erro ao realizar login. Recarregue a página e tente novamente.");
     }
   }
 
-  async function register(event: FormEvent) {
+  async function register(event: React.FormEvent) {
     event.preventDefault();
 
     try {
@@ -65,7 +67,7 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
         );
       }
 
-      toast.error("Erro ao criar conta.");
+      toast.error("Erro ao criar conta. Recarregue a página e tente novamente.");
     }
   }
 
@@ -76,20 +78,20 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
       setAuthForm={setAuthForm}
     >
       {type === "register" && (
-        <Input
+        <AuthInput
           label="Nome"
           type="text"
           required={true}
           setUserData={setUserData}
         />
       )}
-      <Input
+      <AuthInput
         label="Email"
         type="email"
         required={true}
         setUserData={setUserData}
       />
-      <Input
+      <AuthInput
         label="Senha"
         type="password"
         required={true}

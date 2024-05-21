@@ -1,6 +1,6 @@
 import { useState } from "react";
-import show from "../assets/show.svg";
-import hide from "../assets/hide.svg";
+import showIcon from "../../assets/show.svg";
+import hideIcon from "../../assets/hide.svg";
 
 interface UserData {
   name?: string;
@@ -15,7 +15,7 @@ interface Props {
   setUserData?: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
-export default function Input({ label, type, required, setUserData }: Props) {
+export default function AuthInput({ label, type, required, setUserData }: Props) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   if (type === "password") {
@@ -41,7 +41,7 @@ export default function Input({ label, type, required, setUserData }: Props) {
           />
           <div className="flex justify-center items-center w-[15%] md:w-[10%]">
             <img
-              src={showPassword ? show : hide}
+              src={showPassword ? showIcon : hideIcon}
               className="w-2/3"
               onClick={() => setShowPassword(!showPassword)}
             />
@@ -66,14 +66,14 @@ export default function Input({ label, type, required, setUserData }: Props) {
             setUserData &&
             setUserData((prevUserData: UserData) => ({
               ...prevUserData,
-              email: type === "email" ? event.target.value : prevUserData.email,
+              email: event.target.value,
             }));
 
           type === "text" &&
             setUserData &&
             setUserData((prevUserData: UserData) => ({
               ...prevUserData,
-              name: type === "text" ? event.target.value : prevUserData.name,
+              name: event.target.value,
             }));
         }}
       />

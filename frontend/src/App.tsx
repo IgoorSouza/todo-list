@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "./services/axios";
-import AuthForm from "./components/AuthForm";
+import toast from "react-hot-toast";
+import AuthForm from "./components/Auth/AuthForm";
 import Header from "./components/Header";
-import Task from "./components/Task";
+import Task from "./components/Task/Task";
+import TaskForm from "./components/Task/TaskForm";
 
 interface User {
   name: string;
@@ -20,8 +22,9 @@ interface Tasks {
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [authForm, setAuthForm] = useState<string | null>(null);
   const [tasks, setTasks] = useState<Tasks[]>([] as Tasks[]);
+  const [authForm, setAuthForm] = useState<string | null>(null);
+  const [taskForm, setTaskForm] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,10 +39,16 @@ export default function App() {
 
   useEffect(() => {
     async function getTasks() {
-      await api.get("/tasks").then((response) => {
-        setTasks(response.data);
-        setLoading(false);
-      });
+      try {
+        await api.get("/tasks").then((response) => {
+          setTasks(response.data);
+          setLoading(false);
+        });
+      } catch (error) {
+        toast.error(
+          "Ocorreu um erro ao buscar suas tarefas. Por favor, recarregue a página."
+        );
+      }
     }
 
     getTasks();
@@ -49,6 +58,10 @@ export default function App() {
     return (
       <AuthForm type={authForm} setAuthForm={setAuthForm} setUser={setUser} />
     );
+  }
+
+  if (taskForm) {
+    return <TaskForm setTasks={setTasks} setTaskForm={setTaskForm} />;
   }
 
   return (
@@ -61,7 +74,10 @@ export default function App() {
 
       {user ? (
         <>
-          <button className="self-start px-3 py-2 mt-8 font-bold rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90 md:text-xl">
+          <button
+            className="self-start px-3 py-2 mt-8 font-bold rounded-lg bg-[#25a1ff] cursor-pointer hover:opacity-90 md:text-xl"
+            onClick={() => setTaskForm(true)}
+          >
             Adicionar tarefa
           </button>
 
