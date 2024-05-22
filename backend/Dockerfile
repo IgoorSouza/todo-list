@@ -1,13 +1,13 @@
 FROM node:latest
 
-WORKDIR /app
+WORKDIR /backend
 
-COPY package*.json ./
+COPY package*.json .
 
-RUN npm install
+RUN npm i
 
 COPY . .
 
 EXPOSE 3000
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "dev"]

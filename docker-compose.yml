@@ -2,38 +2,31 @@ version: "3.8"
 
 services:
   db:
+    container_name: todo_db
     image: postgres:latest
     ports:
       - 5432:5432
-    container_name: db_postgres_todo
-    # networks:
-    #   - backend_db
+    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #   ports: 
-  #    - 3000:3000
-  #   container_name: backend_todo
-  #   networks:
-  #     - backend_db
-  #     - backend_frontend
-  #   depends_on:
-  #     - db
-
   frontend:
+    container_name: todo_frontend
     build:
       context: ./frontend
     ports:
      - 4173:4173
-    container_name: frontend_todo
-    # networks: backend_frontend
-    # depends_on:
-    # - backend
 
-# networks:
-#   backend_db:
-#   backend_frontend
+  backend:
+    container_name: todo_backend
+    build:
+      context: ./backend
+    ports: 
+      - 3000:3000
+    depends_on:
+      - db
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespass@todo_db:5432/todo?schema=public&connection_timeout=3000
+      - JWT_SECRET=296fc5c11ba7e0d62946edd11501914ac172cb2b975ae89ecaaab1f848dc6d88c8163f7bef11763dd30005fb8b17e6dd2f6b4780ff7319ecf27f93f250f8215b
