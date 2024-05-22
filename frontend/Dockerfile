@@ -1,5 +1,7 @@
 FROM node:20.11.1 as BUILD_IMAGE
 
+ENV VITE_API_URL=http://localhost:3000
+
 WORKDIR /app
 
 COPY package*.json .

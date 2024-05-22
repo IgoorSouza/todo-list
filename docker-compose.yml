@@ -32,5 +32,3 @@ services:
       context: ./frontend
     ports:
      - 4173:4173
-    environment:
-      - API_URL=http://localhost:3000
