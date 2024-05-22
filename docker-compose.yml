@@ -3,11 +3,13 @@ version: "3.8"
 services:
   db:
     container_name: todo_db
-    image: postgres:latest
+    build:
+      context: ./postgres
     ports:
       - 5432:5432
     restart: always
     environment:
+      - POSTGRES_DB=todo
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespass
 
@@ -30,3 +32,5 @@ services:
       context: ./frontend
     ports:
      - 4173:4173
+    environment:
+      - API_URL=http://localhost:3000

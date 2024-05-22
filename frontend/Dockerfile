@@ -1,6 +1,6 @@
 FROM node:20.11.1 as BUILD_IMAGE
 
-WORKDIR /frontend
+WORKDIR /app
 
 COPY package*.json .
 
@@ -12,9 +12,9 @@ RUN npm run build
 
 FROM node:20.11.1 as PRODUCTION_IMAGE
 
-WORKDIR /frontend
+WORKDIR /app
 
-COPY --from=BUILD_IMAGE /frontend/dist/ /frontend/dist/
+COPY --from=BUILD_IMAGE /app/dist/ /app/dist/
 COPY package*.json .
 COPY vite.config.ts .
 
