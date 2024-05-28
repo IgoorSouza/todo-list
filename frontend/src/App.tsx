@@ -21,21 +21,19 @@ interface Tasks {
 }
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const getAuthData = localStorage.getItem("AuthData");
+
+    if (!getAuthData) return null;
+
+    const authData = JSON.parse(getAuthData);
+    api.defaults.headers.common.Authorization = `Bearer ${authData.token}`;
+    return authData;
+  });
   const [tasks, setTasks] = useState<Tasks[]>([] as Tasks[]);
   const [authForm, setAuthForm] = useState<string | null>(null);
   const [taskForm, setTaskForm] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getAuthData = localStorage.getItem("AuthData");
-
-    if (getAuthData) {
-      const authData = getAuthData && JSON.parse(getAuthData);
-      setUser(authData);
-      api.defaults.headers.common.Authorization = `Bearer ${authData.token}`;
-    }
-  }, []);
 
   useEffect(() => {
     async function getTasks() {
