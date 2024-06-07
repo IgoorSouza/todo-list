@@ -4,7 +4,15 @@ import routes from "./routes/index";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || [
+      "http://localhost:4173",
+      "http://localhost:5173",
+    ],
+  })
+);
+
 app.use(express.json());
 
 routes(app);
