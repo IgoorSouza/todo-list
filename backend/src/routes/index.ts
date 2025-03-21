@@ -1,8 +1,8 @@
-import { Application } from "express";
-import usersRoutes from "./users-routes";
+import { Express } from "express";
+import usersRoutes from "./auth-routes";
 import tasksRoutes from "./tasks-routes";
 
-const routes = (app: Application) => {
+const routes = (app: Express) => {
   usersRoutes(app);
   tasksRoutes(app);
 };

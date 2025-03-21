@@ -1,42 +1,28 @@
-import { Application, Request, Response, NextFunction } from "express";
-import jwt, { Secret } from "jsonwebtoken";
-import { get, create, update, remove } from "../controllers/tasks-controller";
+import { Express } from "express";
+import * as taskController from "../controllers/task-controller";
+import checkUserAuthentication from "../middlewares/auth-guard";
+import validateRequestBody from "../middlewares/request-body-validator";
+import { createValidation, concludeValidation } from "../validations/tasks";
 
-declare module "jsonwebtoken" {
-  export interface UserJwtPayload extends JwtPayload {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
-  }
-}
-
-const secret: Secret = process.env.JWT_SECRET ?? Math.random().toString(36);
-
-const tasksRoutes = (app: Application) => {
-  app.get("/tasks", checkUserAuthentication, get);
-  app.post("/tasks/create", checkUserAuthentication, create);
-  app.put("/tasks/update", checkUserAuthentication, update);
-  app.delete("/tasks/delete", checkUserAuthentication, remove);
+const tasksRoutes = (app: Express) => {
+  app.get("/tasks", checkUserAuthentication, taskController.getUserTasks);
+  app.post(
+    "/tasks/new",
+    checkUserAuthentication,
+    validateRequestBody(createValidation),
+    taskController.createNewTask
+  );
+  app.put(
+    "/tasks/:id/conclude",
+    checkUserAuthentication,
+    validateRequestBody(concludeValidation),
+    taskController.concludeTask
+  );
+  app.delete(
+    "/tasks/:id/delete",
+    checkUserAuthentication,
+    taskController.deleteTask
+  );
 };
-
-function checkUserAuthentication(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
-  if (!request.headers.authorization) {
-    return response.status(401).send("User is not authenticated.");
-  }
-
-  const token = request.headers.authorization.split(" ")[1];
-  try {
-    const user = <jwt.UserJwtPayload>jwt.verify(token, secret);
-    request.body = { ...request.body, userId: user.id };
-    next();
-  } catch (error) {
-    return response.status(401).send("Invalid token.");
-  }
-}
 
 export default tasksRoutes;

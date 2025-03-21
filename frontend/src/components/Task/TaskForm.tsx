@@ -33,7 +33,7 @@ export default function TaskForm({ setTasks, setTaskForm }: Props) {
     if (!/^(?!\s*$).+/.test(taskData.title)) return;
 
     try {
-      await api.post("/tasks/create", taskData).then((response) => {
+      await api.post("/tasks/new", taskData).then((response) => {
         setTasks((prevTasks) => [...prevTasks, response.data]);
         setTaskForm(false);
       });

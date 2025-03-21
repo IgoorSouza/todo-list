@@ -5,11 +5,6 @@ export const createValidation = z.object({
   description: z.string(),
 });
 
-export const updateValidation = z.object({
-  id: z.number(),
+export const concludeValidation = z.object({
   done: z.boolean(),
-});
-
-export const removeValidation = z.object({
-  id: z.number(),
 });

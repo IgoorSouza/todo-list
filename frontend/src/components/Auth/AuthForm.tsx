@@ -29,7 +29,7 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
     event && event.preventDefault();
 
     try {
-      await api.post("/users/login", userData).then((response) => {
+      await api.post("/auth", userData).then((response) => {
         setUser(response.data);
         setAuthForm(null);
 
@@ -59,7 +59,7 @@ export default function AuthForm({ type, setUser, setAuthForm }: Props) {
     event.preventDefault();
 
     try {
-      await api.post("/users/create", userData).then(() => {
+      await api.post("/auth/register", userData).then(() => {
         toast.success("Conta criada com sucesso!");
         login();
       });

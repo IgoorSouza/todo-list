@@ -4,6 +4,7 @@ import routes from "./routes/index";
 
 const app = express();
 
+app.use(express.json());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || [
@@ -13,9 +14,7 @@ app.use(
   })
 );
 
-app.use(express.json());
-
 routes(app);
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}!`));
+const port = 3000;
+app.listen(port, () => console.log(`Server running on port ${port}!`));

@@ -1,15 +1,14 @@
-version: "3.8"
-
 services:
   db:
     container_name: todo_db
-    build:
-      context: ./postgres
+    image: postgres
     ports:
       - 5432:5432
     restart: always
-    env_file:
-      - ./postgres/.env
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
 
   backend:
     container_name: todo_backend

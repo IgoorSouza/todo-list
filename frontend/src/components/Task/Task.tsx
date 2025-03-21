@@ -23,16 +23,9 @@ export default function Task({ task, setTasks }: Props) {
   const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
 
   async function toggleDoneStatus() {
-    if (Date.now() - task.updatedAt.getTime() < 2000) {
-      return toast.loading(
-        "Por favor, espere alguns segundos antes de mudar o estado desta tarefa novamente."
-      );
-    }
-
     try {
       await api
-        .put("/tasks/update", {
-          id: task.id,
+        .put(`/tasks/${task.id}/conclude`, {
           done: !task.done,
         })
         .then((response) => {
@@ -55,7 +48,7 @@ export default function Task({ task, setTasks }: Props) {
 
   async function deleteTask(taskId: number) {
     try {
-      await api.delete("/tasks/delete", { data: { id: taskId } }).then(() => {
+      await api.delete(`/tasks/${taskId}/delete`).then(() => {
         setTasks((prevTasks) =>
           prevTasks.filter((prevTask) => prevTask.id !== taskId)
         );
